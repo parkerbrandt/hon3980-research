@@ -1,0 +1,8 @@
+{
+    "image_location": "images/input/",
+    "save_location": "images/output/",
+    "image_in_format": "tiff",
+    "image_out_format": "csv",
+    "image_size": [],
+    "num_rotations": 10
+}
