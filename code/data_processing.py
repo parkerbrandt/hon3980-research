@@ -22,6 +22,7 @@ from skimage import io
 from termcolor import colored
 
 from image_noise_detection import check_image_noise
+from image_analysis import create_avgimage
 
 
 """
@@ -34,12 +35,12 @@ def read_configs():
 Reads all images from a directory and returns their paths in a list
 Assumed structure is 
     path -> Kidney Folders -> Class Folder -> Images
-Assumed format of image filename is
-    k_
+    Example (with naming conventions):
+        path/Kidney_01/k1_cortex/k1_cortex_0031_0_Mode3D.tiff
 Parameters:
     - path: A string location of the path 
 """
-def get_images(path, imgformat='.csv'):
+def get_images(path, imgformat='csv'):
     filelist=[]
     try:
         kidney_folders=listdir(path)
@@ -126,7 +127,7 @@ def rotate_image(image, angle):
 
 """
 """
-def create_dataset(image_paths, output_path, n):
+def create_dataset(image_paths, output_path, n, outimg_format="csv"):
     for image in image_paths:
         # Load the original image
         oimg=io.imread(image)[:,40:,:320,:]
@@ -156,12 +157,15 @@ def create_dataset(image_paths, output_path, n):
             # plt.imshow(best_image(altimg, 1))
             
             # Save the image as a CSV
-            savename=output_path+folder+filename[0]+'_'+filename[1]+'_'+filename[2]+'_'+str(i)+'_Mode3D'+'.csv'            
-            flatimg=np.ravel(altimg)
-            np.savetxt(savename, flatimg)
-         
-            # To save as .tiff instead:
-            # io.imsave(filename, altimg)
+            if outimg_format == "csv":
+                savename=output_path+folder+filename[0]+'_'+filename[1]+'_'+filename[2]+'_'+str(i)+'_Mode3D'+'.csv'            
+                flatimg=np.ravel(altimg)
+                np.savetxt(savename, flatimg)
+            elif outimg_format == "tiff":
+                # To save as .tiff instead:
+                io.imsave(filename, altimg)
+            else:
+                print(colored("Invalid file type to save as.\nValid options are: .csv and .tiff", "red"))
             
         print('Finished: ' + folder+filename[0]+'_'+filename[1]+'_'+filename[2])
 
@@ -185,8 +189,16 @@ def main():
     configs = read_configs(args[0])
 
     print(colored("Retrieving images", "green"))
-    image_paths_list = get_images(configs["image_location"])
-    create_dataset(image_paths_list, )
+    image_paths_list = get_images(configs["image_location"], imgformat="tiff")
+
+    # TODO: Run noise detection for all images
+
+    # TODO: Remove all "noisy" images
+
+    # TODO: Create the dataset using only the good images
+    create_dataset(image_paths=image_paths_list, output_path=configs["save_location"], n=10, outimg_format="csv")
+
+    # TODO: Get the average images for each class
 
     return
 
