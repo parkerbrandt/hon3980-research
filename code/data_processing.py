@@ -17,6 +17,7 @@ import tensorflow as tf
 
 from mpl_toolkits.mplot3d import Axes3D
 from multiprocessing.pool import ThreadPool as Pool
+from os import listdir, isdir
 from skimage import io
 from termcolor import colored
 
@@ -30,14 +31,44 @@ def read_configs():
 
 
 """
+Reads all images from a directory and returns their paths in a list
+Assumed structure is 
+    path -> Kidney Folders -> Class Folder -> Images
+Assumed format of image filename is
+    k_
+Parameters:
+    - path: A string location of the path 
 """
-def get_images(directory):
-    return
+def get_images(path, imgformat='.csv'):
+    filelist=[]
+    try:
+        kidney_folders=listdir(path)
+        
+        # Loop through each kidney and open their class folders
+        for kidney in kidney_folders:
+            if isdir(path+kidney):            
+                class_folders=listdir(path+kidney)
+
+                # Loop through each class and add each image to the filelist
+                for k_class in class_folders:
+                    images=listdir(path+kidney+'/'+k_class)
+
+                    # Add all valid images
+                    # Valid images have the same extension as imgformat parameter
+                    for image in images:
+                        filename=image.split('.')
+                        if imgformat == filename[len(filename)-1]:
+                            imgpath=path+kidney+'/'+k_class+'/'+image
+                            filelist.append(imgpath)
+            
+    except OSError as e:
+        print(e)
+    return filelist
 
 
 """
 
-    Done by Sinaro Ly
+    Function created by Sinaro Ly
 """
 def crop_image(image, depth, diameter):
     best_sum = 0
@@ -154,8 +185,8 @@ def main():
     configs = read_configs(args[0])
 
     print(colored("Retrieving images", "green"))
-    image_paths_list = get_images()
-    create_dataset()
+    image_paths_list = get_images(configs["image_location"])
+    create_dataset(image_paths_list, )
 
     return
 
