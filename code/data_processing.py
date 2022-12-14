@@ -1,36 +1,37 @@
 """
 Fall 2022 Research
-Authors:    Adrien Badre  - PhD (adbadre@ou.edu)
+Authors:    Adrien Badre  - PhD (adrien.f.badre-1@ou.edu)
             Parker Brandt - BS  (parker.a.brandt-1@ou.edu)
-            Sinaro Ly     - MS  (sinaro.ly@ou.edu)
+            Sinaro Ly     - MS  (sinaro.ly-1@ou.edu)
 """
 
 # Imports
-import matplotlib.pyplot as plt
-import numpy as np
+import json
+# import matplotlib.pyplot as plt
+# import numpy as np
 import os
 import random
-import scipy
-import sklearn
+# import scipy
+# import sklearn
 import sys
-import tensorflow as tf
+# import tensorflow as tf
 
-from mpl_toolkits.mplot3d import Axes3D
+# from mpl_toolkits.mplot3d import Axes3D
 from multiprocessing.pool import ThreadPool as Pool
-from os import listdir, isdir
-from skimage import io
+from os import listdir
+# from skimage import io
 from termcolor import colored
 
-from image_noise_detection import check_image_noise
-from image_analysis import create_avgimage
+# from image_noise_detection import check_image_noise
+# from image_analysis import create_avgimage
 
 
 """
-Reads configs/config.json to get information on processing
+Reads configs/config.json to get information on processing the input images
 """
-def read_configs():
-    return
-
+def read_configs(filename):
+    f = open(filename, 'r')
+    return json.load(f)
 
 """
 """
@@ -83,7 +84,7 @@ def get_images(path, imgformat='csv'):
 
 
 """
-
+    Crops an image 
     Function created by Sinaro Ly
 """
 def crop_image(image, depth, diameter):
@@ -192,27 +193,26 @@ Main Function
     - Uses data from config file to determine input/output, and how to augment data
 """
 def main():
-
     # Get command-line arguments
-    # Format: [0] = config file location, [1] = ...
+    # Format: [1] = config file location
     args = sys.argv
 
+    print(colored(f"Reading config file at {args[1]}...", "green"))
+    configs = read_configs(args[1])
+    print(colored("Configuration retrieved.", "green"))
 
-    print(colored("Reading config file...", "green"))
-    configs = read_configs(args[0])
+    # print(colored("Retrieving images...", "green"))
+    # image_paths_list = get_images(configs["image_location"], imgformat="tiff")
 
-    print(colored("Retrieving images...", "green"))
-    image_paths_list = get_images(configs["image_location"], imgformat="tiff")
+    # # TODO: Run noise detection for all images
+    # print(colored("Running noise analysis on images...", "green"))
 
-    # TODO: Run noise detection for all images
-    print(colored("Running noise analysis on images...", "green"))
+    # # TODO: Remove all "noisy" images
 
-    # TODO: Remove all "noisy" images
+    # # TODO: Create the dataset using only the good images
+    # create_dataset(image_paths=image_paths_list, output_path=configs["save_location"], n=10, outimg_format="csv")
 
-    # TODO: Create the dataset using only the good images
-    create_dataset(image_paths=image_paths_list, output_path=configs["save_location"], n=10, outimg_format="csv")
-
-    # TODO: Get the average images for each class
+    # # TODO: Get the average images for each class
 
     return
 
@@ -220,5 +220,5 @@ def main():
 """
 Start of Program Logic
 """
-if __name__ == "__init__":
+if __name__ == "__main__":
     main()
