@@ -26,9 +26,24 @@ from image_analysis import create_avgimage
 
 
 """
+Reads configs/config.json to get information on processing
 """
 def read_configs():
     return
+
+
+"""
+"""
+def load_image(filename, image_shape):
+
+    # Get the extension and use that to determine how to load the function
+    ext = filename.split(".")[-1]
+    if ext == "tiff":
+        return io.imread(filename)[:,40:,:320,:]
+    elif ext == "csv":
+        # Will need to reshape using image shape from config file
+        image = np.genfromtxt(filename)
+        return image.reshape(image_shape)
 
 
 """
@@ -134,11 +149,10 @@ def create_dataset(image_paths, output_path, n, outimg_format="csv"):
         
         # Crop the image
         cropoimg=crop_image(oimg, 210, 185)
-        # plt.imshow(best_image(oimg, 1))
         
         filename=(image.split('/')[len(image.split('/'))-1]).split('.tiff')[0].split('_')
         
-        # Check for any typos
+        # Check for any known typos
         if filename[1] == 'medula':
             filename[1]='medulla'
         
@@ -154,7 +168,6 @@ def create_dataset(image_paths, output_path, n, outimg_format="csv"):
         angle = 360 / (n + 1)
         for i in range(1, n + 1):
             altimg=rotate_image(cropoimg, angle * i)
-            # plt.imshow(best_image(altimg, 1))
             
             # Save the image as a CSV
             if outimg_format == "csv":
@@ -188,10 +201,11 @@ def main():
     print(colored("Reading config file...", "green"))
     configs = read_configs(args[0])
 
-    print(colored("Retrieving images", "green"))
+    print(colored("Retrieving images...", "green"))
     image_paths_list = get_images(configs["image_location"], imgformat="tiff")
 
     # TODO: Run noise detection for all images
+    print(colored("Running noise analysis on images...", "green"))
 
     # TODO: Remove all "noisy" images
 
