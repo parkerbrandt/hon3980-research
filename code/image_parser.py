@@ -6,7 +6,10 @@ Written by:
 """
 
 # Imports
+import numpy as np
+
 from abc import ABC, abstractclassmethod
+from skimage import io
 
 """
 Abstract ImageReader class
@@ -21,8 +24,8 @@ class ImageReader(ABC):
         pass
 
     @abstractclassmethod
-    def parse_image(self):
-        # Parses an image given a filename and some parameters
+    def save_img(self, save_path):
+        # Saves an image
         pass
 
 
@@ -40,9 +43,9 @@ class ImageReaderGlobal(ImageReader):
         return
 
     def io_read(self, filename):
-        return
+        return io.imread(filename.numpy().decode())
 
-    def parse_image(self):
+    def save_img(self, save_path):
         return
 
 
@@ -52,14 +55,20 @@ Notes:
     - CSV images cannot be read by io.imread()
     - Will be stored as 1-Dimensional arrays, and when loaded will need to be reshaped
 """
-def ImageReaderCSV(ImageReader):
+class ImageReaderCSV(ImageReader):
     def __init__(self, configs):
         ImageReader.__init__(self)
-        self.configs = configs
+        self._configs = configs
         return
     
     def io_read(self, filename):
+        image = np.genfromtxt(filename)
+        if "csv_shape" in self._configs:
+            image = image.reshape(self._configs["csv_shape"])
+        else:
+            # Use a default reshape
+            image = image.reshape(185, 210, 185, 1)
         return
 
-    def parse_image(self):
+    def save_img(self, save_path):
         return
