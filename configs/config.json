@@ -8,5 +8,8 @@
     "image_out_format": "csv",
     
     "image_size": [],
-    "num_rotations": 10
+    "csv_shape": [],
+    "num_rotations": 10,
+
+    "noise_tolerance": [0.70, 0.70, 0.70]
 }
