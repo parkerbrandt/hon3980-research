@@ -7,22 +7,19 @@ Authors:    Adrien Badre  - PhD (adrien.f.badre-1@ou.edu)
 
 # Imports
 import json
-# import matplotlib.pyplot as plt
-# import numpy as np
+import numpy as np
 import os
 import random
-# import scipy
+import scipy
 # import sklearn
 import sys
-# import tensorflow as tf
 
 # from mpl_toolkits.mplot3d import Axes3D
 from multiprocessing.pool import ThreadPool as Pool
-# from skimage import io
+from skimage import io
 from termcolor import colored
 
-# from image_noise_detection import check_image_noise
-# from image_analysis import create_avgimage
+from image_noise_detection import check_image_noise
 
 
 """
@@ -209,14 +206,29 @@ def main():
         print(f"\t{path}")
 
     # Run noise detection for all images
-    # print(colored("Running noise analysis on images...", "green"))
+    print(colored("\nRunning noise analysis on images...", "green"))
+    noisy_images, clean_images = check_image_noise(image_paths_list, configs)
+    noisy_image_count = 0
+    for classtype, image_list in noisy_images.items():
+        noisy_image_count += len(image_list)
 
-    # # TODO: Remove all "noisy" images
+    print(colored(f"Found {noisy_image_count} noisy images...", "green"))
+    if noisy_image_count > 0:
+        print(colored(f"Removing: ", "green"))
+        for noisy in noisy_images:
+            print(noisy)
 
-    # # TODO: Create the dataset using only the good images
-    # create_dataset(image_paths=image_paths_list, output_path=configs["save_location"], n=10, outimg_format="csv")
 
-    # # TODO: Get the average images for each class
+    # TODO: Create the dataset using only the good images
+    all_clean_imgs = []
+    for classtype, image in clean_images.items():
+        all_clean_imgs.append(image)
+
+    print(colored("Cropping and rotating images...", "green"))
+    # create_dataset(image_paths=all_clean_imgs, output_path=configs["save_location"], n=configs[""], outimg_format=configs[""])
+
+
+    print(colored("Image Analysis Complete!", "green"))
 
     return
 
