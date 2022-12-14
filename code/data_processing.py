@@ -18,7 +18,6 @@ import sys
 
 # from mpl_toolkits.mplot3d import Axes3D
 from multiprocessing.pool import ThreadPool as Pool
-from os import listdir
 # from skimage import io
 from termcolor import colored
 
@@ -59,16 +58,16 @@ Parameters:
 def get_images(path, imgformat='csv'):
     filelist=[]
     try:
-        kidney_folders=listdir(path)
+        kidney_folders=os.listdir(path)
         
         # Loop through each kidney and open their class folders
         for kidney in kidney_folders:
-            if isdir(path+kidney):            
-                class_folders=listdir(path+kidney)
+            if os.path.isdir(path+kidney):   
+                class_folders=os.listdir(path+kidney)
 
                 # Loop through each class and add each image to the filelist
                 for k_class in class_folders:
-                    images=listdir(path+kidney+'/'+k_class)
+                    images=os.listdir(path+kidney+'/'+k_class)
 
                     # Add all valid images
                     # Valid images have the same extension as imgformat parameter
@@ -197,14 +196,19 @@ def main():
     # Format: [1] = config file location
     args = sys.argv
 
+    # Read the config file for information on how to process data
     print(colored(f"Reading config file at {args[1]}...", "green"))
     configs = read_configs(args[1])
-    print(colored("Configuration retrieved.", "green"))
+    print(colored("Configuration retrieved.\n", "green"))
 
-    # print(colored("Retrieving images...", "green"))
-    # image_paths_list = get_images(configs["image_location"], imgformat="tiff")
+    # Retrieve the actual images
+    print(colored("Retrieving images from " + configs["image_location"] + "...", "green"))
+    image_paths_list = get_images(configs["image_location"], imgformat=configs["image_in_format"])
+    print(colored(f"Input images ({len(image_paths_list)}): ", "green"))
+    for path in image_paths_list:
+        print(f"\t{path}")
 
-    # # TODO: Run noise detection for all images
+    # Run noise detection for all images
     # print(colored("Running noise analysis on images...", "green"))
 
     # # TODO: Remove all "noisy" images
