@@ -222,7 +222,7 @@ The example images make it easy to see how the noise evolves over the distributi
 
 The next step in the process was to determine how much noise was too much for the images, and where we should actually cutoff. We were trying to decide if it was worth it to try and save more images if they may not have affected the data as much. To decide this we created average images. This was done by taking the values of pixels across images and summing them, then displaying the image. We did this for each class, and we did this by creating an average image from all the "low-noise" images, then making another including the images with some noise. 
 
-![](media/results/noise/averagecorteximg.JPG) {width: }
+![](media/results/noise/averagecorteximg.JPG)
 
 ![](media/results/noise/averagemedullaimg.JPG)
 
@@ -232,7 +232,7 @@ The next step in the process was to determine how much noise was too much for th
 A main concern with using more noise for the machine learning model was that the noise can make it hard to ascertain where the actual signal of the image ends or not. As can be seen in the individual example images, it can be hard for even a human to decide where the actual image signal ends, and where there is just noise. This could make it difficult for a machine learning model to even decide, and not make invalid guesses when trying classify kidney class types.
 
 
-While we have not moved forward with using this method as a way to determine if an image is noisy or not, we did take 3 example images from each class, and then plot their individual pixel values on a histogram. Each class has an example image (from left to right) that is low-noise or no noise, medium-noise, and then high-noise to show how the distribution of their actual pixel values changes with more and more noise added. The example images are also displayed above the histograms for a visual, and 
+While we have not moved forward with using this method as a way to determine if an image is noisy or not, we did take 3 example images from each class, and then plot their individual pixel values on a histogram. Each class has an example image (from left to right) that is low-noise or no noise, medium-noise, and then high-noise to show how the distribution of their actual pixel values changes with more and more noise added. The example images are also displayed above the histograms for a visual.
 
 ![](media/results/noise/cortexintensities.JPG)
 
@@ -240,13 +240,15 @@ While we have not moved forward with using this method as a way to determine if 
 
 ![](media/results/noise/pelvisintensities.JPG)
 
+The difference in distributions is interesting, and could be used as another method of determining the level of noise in an image.
+
 
 
 <div style="page-break-after: always;"></div>
 
 ## Conclusion
 
-Over the course of the Fall 2022 semester, I have learned about machine learning and image preprocessing techniques, and how data preprocessing and data generation is necessary for some machine learning models to work. I have learned practical uses for Python libraries such as numpy, scipy, and TensorFlow. Through actually working through the 
+Over the course of the Fall 2022 semester, I have learned about machine learning and image preprocessing techniques, and how data preprocessing and data generation is necessary for some machine learning models to work. Through the obstacles that my group have faced in trying to generate a data set, I have learned practical uses for Python libraries such as numpy, scipy, and TensorFlow. Those obstacles showed me how much work can go into data generation and maintenance for machine learning. Working with Adrien, Sinaro, Dr. Pan, and the others in the lab has helped me learn more about working with a team, and how much coordination can go into such a project.
 
 
 ## What's Next?
