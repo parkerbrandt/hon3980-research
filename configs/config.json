@@ -7,9 +7,9 @@
     "image_in_format": "csv",
     "image_out_format": "csv",
     
-    "image_size": [],
-    "csv_shape": [],
+    "image_size": [185, 210, 185, 1],
+    "csv_shape": [185, 210, 185, 1],
     "num_rotations": 10,
 
-    "noise_tolerance": [0.70, 0.70, 0.70]
+    "noise_tolerance": 0.70
 }
