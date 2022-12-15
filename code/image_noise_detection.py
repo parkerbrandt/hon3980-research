@@ -21,9 +21,7 @@ def check_image_noise(files, configs):
 
     # Count the number of non-zero pixels
     file_nonzeros={}
-    count=0
     for image in files:
-        print("    %d/%d   %s"%(count, len(files), image.split('CW')[1]),end="\r")
         imreader = ImageReaderGlobal()
         if image.split(".")[-1] == "csv":
             imreader = ImageReaderCSV(configs)
@@ -32,7 +30,6 @@ def check_image_noise(files, configs):
         nonzeros=np.count_nonzero(img)
         
         file_nonzeros[image]=nonzeros
-        count+=1
 
     # Divide by classes
     classes = configs["classes"]
@@ -44,16 +41,28 @@ def check_image_noise(files, configs):
             classes[classtype] = [img]
 
     # Create histograms of noise distribution in the images
-    for classtype in classes.keys():
+    for classtype, image_list in classes.items():
         print(colored("Histogram of non-zero value count for {classtype}:", "yellow"))
-        plt.hist()
+        nz_counts = []
+        for image in image_list:
+            nz_counts.append(np.count_nonzero(image))     
+        plt.hist(nz_counts)   
+        
+    # Remove the noisy images from the dataset
+    for classtype, image_list in classes.items():
+        if len(clean_images[classtype]) == 0:
+            clean_images[classtype] = []
 
+        if len(noisy_images[classtype]) == 0:
+            noisy_images[classtype] = []
 
+        for image in image_list:
+            if np.count_nonzero(image) / configs["image_size"] < configs["noise_tolerance"]:
+                clean_images[classtype].append(image)
+            else:
+                noisy_images[classtype].append(image)
 
-    cutoff = configs["noise_tolerance"]
-
-
-    # TODO: Average images before and after removing noisy images
+    # Average images before and after removing noisy images
     for classtype in classes:
         print(colored(f"The average image of {classtype} before removing noisy images...", "yellow"))
         create_avgimage(classes[classtype])
