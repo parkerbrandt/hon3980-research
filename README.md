@@ -50,14 +50,6 @@ When calling 'data_processing.py', the script performs multiple tasks to analyze
 
 <div style="page-break-after: always;"></div>
 
-## Demo
-
-![](media/demo/demo.gif)
-
-
-
-
-<div style="page-break-after: always;"></div>
 
 ## The Problem
 
