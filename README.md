@@ -9,7 +9,7 @@ GitHub Link: https://github.com/parkerbrandt/hon3980-research
 
 <hr>
 
-### How to Run
+## How to Run
 
 To run the program, navigate into the '/code/' folder by doing:
 
@@ -22,7 +22,7 @@ From there, use Python to execute the code by executing on the command-line:
 This will then run the code and tell the program that the necessary configurations are located in that config.json file. The user can edit config.json to change how they want the code to run.
 
 
-### How it Works
+## How it Works
 
 When calling 'data_processing.py', the script goes performs multiple tasks:
 
@@ -38,11 +38,11 @@ When calling 'data_processing.py', the script goes performs multiple tasks:
 
 
 
-### Demo
+## Demo
 
 ![](media/demo/demo.gif)
 
-### Materials
+## Materials
     - OU OSCER Supercomputer
     - Jupyter Notebook / Python
     - 900 3D Images provided by Dr. Qinggong Tang (qtang@ou.edu) and Chen Wang (chen_wang_ou@ou.edu)
@@ -50,17 +50,20 @@ When calling 'data_processing.py', the script goes performs multiple tasks:
         - 3 classes each (cortex, medulla, pelvis) with each class having 30 3D images
         - Stored as .tiff files
 
-### The Problem
+
+
+## The Problem
 
 Part 1:</br>
 Given 3-dimensional images of kidney classes, can we create a machine learning model that can classify those 3-dimensional images to which class of kidney tissue the image belongs to accurately.
 
 
 Part 2:</br>
-Can we use the existing image data set to create more images to train the machine learning model further?
+Can we use the existing image data set to create more images to train the machine learning model further? If so, how can we change the images to provide more data to the model for greater accuracy?
 
 
-### Methods & Algorithms
+
+## Methods & Algorithms
 
 #### Rotation & Cropping
 
@@ -76,7 +79,7 @@ from the scipy Python library. This function allowed me to rotate 3-Dimensional 
 #### Image Noise
 
 
-### Results
+## Results
 
 #### Rotation & Cropping
 
@@ -118,12 +121,14 @@ After settling on using non-zero count as a valid way of
 ** Using a cutoff of 1.2E8 nonzero pixels as a cutoff
 
 
-### Conclusion
+## Conclusion
 
 Over the course of the Fall 2022 semester, I have learned about machine learning and image preprocessing techniques, and how data preprocessing and data generation is necessary for some machine learning models to work. I have learned practical uses for Python libraries such as numpy, scipy, and TensorFlow. 
 
 
-### What's Next?
+## What's Next?
 
 #### Machine Learning Training
-As of 12/14/2022, we have gotten results for the first iterations of the machine learning model training and validation. The results 
+As of 12/14/2022, we have gotten results for the first iterations of the machine learning model training and validation. The validation accuracy has varied much, but it shows promise if we are able to make the model more consistent.
+
+![](media/results/ml/1214results.JPG)
