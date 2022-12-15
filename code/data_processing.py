@@ -1,6 +1,6 @@
 """
 Fall 2022 Research
-Authors:    Adrien Badre  - PhD (adrien.f.badre-1@ou.edu)
+Authors:    Adrien Badré  - PhD (adrien.f.badre-1@ou.edu)
             Parker Brandt - BS  (parker.a.brandt-1@ou.edu)
             Sinaro Ly     - MS  (sinaro.ly-1@ou.edu)
 """
@@ -11,15 +11,16 @@ import numpy as np
 import os
 import random
 import scipy
-# import sklearn
+import sklearn
 import sys
 
-# from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D
 from multiprocessing.pool import ThreadPool as Pool
 from skimage import io
 from termcolor import colored
 
 from image_noise_detection import check_image_noise
+from image_parser import ImageReaderGlobal, ImageReaderCSV
 
 
 """
@@ -28,19 +29,6 @@ Reads configs/config.json to get information on processing the input images
 def read_configs(filename):
     f = open(filename, 'r')
     return json.load(f)
-
-"""
-"""
-def load_image(filename, image_shape):
-
-    # Get the extension and use that to determine how to load the function
-    ext = filename.split(".")[-1]
-    if ext == "tiff":
-        return io.imread(filename)[:,40:,:320,:]
-    elif ext == "csv":
-        # Will need to reshape using image shape from config file
-        image = np.genfromtxt(filename)
-        return image.reshape(image_shape)
 
 
 """
@@ -138,16 +126,22 @@ def rotate_image(image, angle):
 
 
 """
+Takes a set of images as input, then crops them, and rotates them n times to produce more images and saves them
 """
-def create_dataset(image_paths, output_path, n, outimg_format="csv"):
+def create_dataset(configs, image_paths, output_path, n, outimg_format="csv"):
+    
+    imreader = ImageReaderGlobal()
+    if outimg_format == "csv":
+        imreader=ImageReaderCSV(configs)
+    
     for image in image_paths:
         # Load the original image
-        oimg=io.imread(image)[:,40:,:320,:]
+        oimg=imreader.io_read()[:,40:,:320,:]
         
         # Crop the image
         cropoimg=crop_image(oimg, 210, 185)
         
-        filename=(image.split('/')[len(image.split('/'))-1]).split('.tiff')[0].split('_')
+        filename=(image.split('/')[len(image.split('/'))-1]).split(configs["image_in_format"])[0].split('_')
         
         # Check for any known typos
         if filename[1] == 'medula':
@@ -157,27 +151,19 @@ def create_dataset(image_paths, output_path, n, outimg_format="csv"):
         folder=image.split('/')
         folder=folder[len(folder)-3]+'/'+folder[len(folder)-2]+'/'
               
-        ofilename=output_path+folder+filename[0]+'_'+filename[1]+'_'+filename[2]+'_0_Mode3D'+'.csv'
-        flatoimg=np.ravel(cropoimg)
-        np.savetxt(ofilename, flatoimg)
+        ofilename=output_path+folder+filename[0]+'_'+filename[1]+'_'+filename[2]+'_0_Mode3D'+'.'+outimg_format
+        imreader.save_img(oimg, ofilename)
         
         # Rotate the image n times
         angle = 360 / (n + 1)
         for i in range(1, n + 1):
             altimg=rotate_image(cropoimg, angle * i)
             
-            # Save the image as a CSV
-            if outimg_format == "csv":
-                savename=output_path+folder+filename[0]+'_'+filename[1]+'_'+filename[2]+'_'+str(i)+'_Mode3D'+'.csv'            
-                flatimg=np.ravel(altimg)
-                np.savetxt(savename, flatimg)
-            elif outimg_format == "tiff":
-                # To save as .tiff instead:
-                io.imsave(filename, altimg)
-            else:
-                print(colored("Invalid file type to save as.\nValid options are: .csv and .tiff", "red"))
+            # Save the image
+            savename=output_path+folder+filename[0]+'_'+filename[1]+'_'+filename[2]+'_'+str(i)+'_Mode3D'+'.'+outimg_format        
+            imreader.save_img(altimg, savename)
             
-        print('Finished: ' + folder+filename[0]+'_'+filename[1]+'_'+filename[2])
+        print('\tFinished: ' + folder+filename[0]+'_'+filename[1]+'_'+filename[2])
 
     return
 
@@ -215,18 +201,17 @@ def main():
     print(colored(f"Found {noisy_image_count} noisy images...", "green"))
     if noisy_image_count > 0:
         print(colored(f"Removing: ", "green"))
-        for noisy in noisy_images:
-            print(noisy)
+        for image, noise in noisy_images.items():
+            print(image)
 
 
-    # TODO: Create the dataset using only the good images
+    # Create the dataset using only the good images
     all_clean_imgs = []
     for classtype, image in clean_images.items():
         all_clean_imgs.append(image)
 
     print(colored("Cropping and rotating images...", "green"))
-    # create_dataset(image_paths=all_clean_imgs, output_path=configs["save_location"], n=configs[""], outimg_format=configs[""])
-
+    create_dataset(configs=configs, image_paths=all_clean_imgs, output_path=configs["save_location"], n=configs["num_rotations"], outimg_format=configs["image_out_format"])
 
     print(colored("Image Analysis Complete!", "green"))
 
