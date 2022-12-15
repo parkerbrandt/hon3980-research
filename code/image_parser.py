@@ -45,7 +45,8 @@ class ImageReaderGlobal(ImageReader):
     def io_read(self, filename):
         return io.imread(filename.numpy().decode())
 
-    def save_img(self, save_path):
+    def save_img(self, image, save_path):
+        io.imsave(save_path, image)
         return
 
 
@@ -70,5 +71,7 @@ class ImageReaderCSV(ImageReader):
             image = image.reshape(185, 210, 185, 1)
         return
 
-    def save_img(self, save_path):
-        return
+    def save_img(self, image, save_path):
+        flatimg=np.ravel(image)
+        np.savetxt(save_path, flatimg)
+        return 
